@@ -26,11 +26,11 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="u" items="${usuarios}">
+        <c:forEach var="u" items="${usuariosList}">
             <tr>
                 <th scope="row">${u.getIdUsuario()}</th>
                 <td>${u.getNombre()}</td>
-                <td>${u.getUsername()}</td>
+                <td>${u.getEmail()}</td>
                 <td>
                     <a href="${pageContext.request.contextPath}/usuarios?action=form&id=${u.getIdUsuario()}" class="btn btn-sm btn-warning">Editar</a>
                     <a href="${pageContext.request.contextPath}/usuarios?action=delete&id=${u.getIdUsuario()}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?');">Eliminar</a>

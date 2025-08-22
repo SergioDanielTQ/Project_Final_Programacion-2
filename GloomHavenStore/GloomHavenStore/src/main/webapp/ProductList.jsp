@@ -36,17 +36,17 @@
         <td>${p.descripcion}</td>
         <td>$${p.precio}</td>
         <td>
-            <!-- Botón común para todos -->
+            
             <form action="CarritoServlet" method="post" class="d-flex">
                 <input type="hidden" name="idProducto" value="${p.id}"/>
                 <input type="number" name="cantidad" value="1" min="1" class="form-control me-2" style="width: 80px;"/>
                 <button type="submit" class="btn btn-success">Agregar 🛒</button>
             </form>
 
-            <!-- Opciones extra solo para admin -->
+            
             <c:if test="${sessionScope.rol == 'admin'}">
                 <a href="formProducto.jsp?id=${p.id}" class="btn btn-warning btn-sm ms-2">✏ Editar</a>
-                <a href="deleteProducto?id=${p.id}" class="btn btn-danger btn-sm ms-2"
+                <a href="${pageContext.request.contextPath}/product?accion=eliminar&id=${p.id}" class="btn btn-danger btn-sm ms-2"
                    onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑 Eliminar</a>
             </c:if>
         </td>

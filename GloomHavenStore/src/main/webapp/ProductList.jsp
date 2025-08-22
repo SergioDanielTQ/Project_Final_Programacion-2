@@ -46,7 +46,7 @@
             
             <c:if test="${sessionScope.rol == 'admin'}">
                 <a href="formProducto.jsp?id=${p.id}" class="btn btn-warning btn-sm ms-2">✏ Editar</a>
-                <a href="deleteProducto?id=${p.id}" class="btn btn-danger btn-sm ms-2"
+                <a href="${pageContext.request.contextPath}/product?accion=eliminar&id=${p.id}" class="btn btn-danger btn-sm ms-2"
                    onclick="return confirm('¿Seguro que deseas eliminar este producto?')">🗑 Eliminar</a>
             </c:if>
         </td>

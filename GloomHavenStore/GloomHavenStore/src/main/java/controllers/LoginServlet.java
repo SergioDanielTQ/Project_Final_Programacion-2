@@ -28,10 +28,10 @@ public class LoginServlet extends HttpServlet {
 
            
           if ("admin".equals(u.getRol())) {
-            resp.sendRedirect(req.getContextPath() + "/product");
+            resp.sendRedirect("adminCompras.jsp");
           } else {
-                // Antes: resp.sendRedirect("ProductList.jsp");
-            resp.sendRedirect(req.getContextPath() + "/product");
+             
+             resp.sendRedirect(req.getContextPath() + "/product");
             }
         } else {
             resp.sendRedirect("login.jsp?error=Credenciales incorrectas");

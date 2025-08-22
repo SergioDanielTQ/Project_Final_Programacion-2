@@ -36,11 +36,12 @@ public class ProductServlet extends HttpServlet {
             getServletContext().getRequestDispatcher("/formProducto.jsp").forward(request, response);
 
         } else if ("eliminar".equals(accion)) {
-            // Eliminar producto
             int id = Integer.parseInt(request.getParameter("id"));
             service.deleteProduct(id);
-            response.sendRedirect("ProductServlet");
-        }
+            response.sendRedirect(request.getContextPath() + "/product");
+
+            }
+
     }
 
     @Override
