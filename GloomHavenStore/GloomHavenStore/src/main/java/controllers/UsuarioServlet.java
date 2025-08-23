@@ -11,7 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import models.Usuario;
 import services.UsuarioService;
 import services.UsuarioServiceImpl;
-
+// Servlet encargado de la administración de usuarios.
+// Permite listar, crear, editar y eliminar usuarios.
 @WebServlet("/usuarios")
 public class UsuarioServlet extends HttpServlet {
     private final UsuarioService usuarioService = new UsuarioServiceImpl();
@@ -19,37 +20,39 @@ public class UsuarioServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
+        // Dependiendo de la acción se muestra formulario, se elimina o se listan los usuarios
         if (action != null) {
             switch (action) {
                 case "form":
-                    showForm(req, resp);
+                    showForm(req, resp);// Mostrar formulario de creación/edición
                     break;
                 case "delete":
-                    deleteUser(req, resp);
+                    deleteUser(req, resp);// Eliminar usuario
                     break;
                 default:
-                    listUsers(req, resp);
+                    listUsers(req, resp);// Listar usuarios
                     break;
             }
         } else {
-            listUsers(req, resp);
+            listUsers(req, resp);// Acción por defecto
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
+        // Acción por defecto
         if ("create".equals(action)) {
             saveUser(req, resp);
         }
     }
-
+    // Lista todos los usuarios y los envía a la vista
     private void listUsers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Usuario> usuarios = usuarioService.listar();
         req.setAttribute("usuariosList", usuarios); 
         getServletContext().getRequestDispatcher("/usuarios.jsp").forward(req, resp);
     }
-
+    // Muestra formulario, cargando datos si es edición
     private void showForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
@@ -59,7 +62,7 @@ public class UsuarioServlet extends HttpServlet {
         }
         getServletContext().getRequestDispatcher("/formUsuario.jsp").forward(req, resp);
     }
-
+    // Guarda un usuario nuevo o actualiza si ya existe
     private void saveUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String idParam = req.getParameter("id");
         String nombre = req.getParameter("nombre");
@@ -79,7 +82,7 @@ public class UsuarioServlet extends HttpServlet {
         usuarioService.guardar(usuario);
         resp.sendRedirect(req.getContextPath() + "/usuarios");
     }
-
+    // Elimina un usuario por ID
     private void deleteUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int id = Integer.parseInt(req.getParameter("id"));
         usuarioService.eliminar(id);

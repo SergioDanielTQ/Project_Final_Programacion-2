@@ -6,17 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import models.Compra;
 
+// Implementa la interfaz CompraService, conectándose a MySQL
 public class CompraServiceImpl implements CompraService {
 
     @Override
     public boolean registrarCompra(Compra compra) {
+        // SQL para registrar la compra principal y sus detalles
         String sqlCompra = "INSERT INTO compras (id_usuario, estado) VALUES (?, 'pendiente')";
         String sqlDetalle = "INSERT INTO detalle_compra (id_compra, id_producto, cantidad, subtotal) VALUES (?,?,?,?)";
 
         try (Connection conn = MySQLConnection.getConnection()) {
+             // Desactiva autocommit para controlar la transacción
             conn.setAutoCommit(false);
 
-           
+            // Inserta la compra y recupera el id generado
             PreparedStatement psCompra = conn.prepareStatement(sqlCompra, Statement.RETURN_GENERATED_KEYS);
             psCompra.setInt(1, compra.getIdUsuario());
             psCompra.executeUpdate();
@@ -25,7 +28,7 @@ public class CompraServiceImpl implements CompraService {
             int idCompra = 0;
             if (rs.next()) idCompra = rs.getInt(1);
 
-          
+            // Inserta cada detalle de la compra
             for (var d : compra.getDetalles()) {
                 PreparedStatement psDetalle = conn.prepareStatement(sqlDetalle);
                 psDetalle.setInt(1, idCompra);
@@ -34,7 +37,7 @@ public class CompraServiceImpl implements CompraService {
                 psDetalle.setDouble(4, d.getSubtotal());
                 psDetalle.executeUpdate();
             }
-
+            // Confirma la transacción
             conn.commit();
             return true;
         } catch (SQLException e) {
@@ -51,7 +54,7 @@ public class CompraServiceImpl implements CompraService {
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
+             // Recorre los resultados y construye objetos Compra
             while (rs.next()) {
                 Compra c = new Compra();
                 c.setIdCompra(rs.getInt("id_compra"));
@@ -74,6 +77,7 @@ public class CompraServiceImpl implements CompraService {
 
             ps.setString(1, estado);
             ps.setInt(2, idCompra);
+             // Retorna true si al menos una fila fue actualizada
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {

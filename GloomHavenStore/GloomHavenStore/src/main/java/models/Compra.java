@@ -2,14 +2,15 @@ package models;
 
 import java.util.Date;
 import java.util.List;
-
+// Modelo que representa una compra realizada por un usuario.
+// Contiene la información básica de la compra y los productos asociados.
 public class Compra {
     private int idCompra;
     private int idUsuario;
     private Date fecha;
     private String estado;
     private List<DetalleCompra> detalles;
-
+// Getters: permiten acceder a los atributos
     public int getIdCompra() {
         return idCompra;
     }
@@ -29,7 +30,7 @@ public class Compra {
     public List<DetalleCompra> getDetalles() {
         return detalles;
     }
-
+    // Setters: permiten modificar los atributos
     public void setIdCompra(int idCompra) {
         this.idCompra = idCompra;
     }

@@ -1,5 +1,6 @@
 package models;
-
+// Clase que representa un producto dentro del sistema.
+// Se suele usar en aplicaciones de inventario, facturación, ventas, etc.
 public class Product {
     private int id;
     private String nombre;
@@ -7,7 +8,8 @@ public class Product {
     private double precio;
     private int stock;
     private String imagen;
-
+    private String estado;
+  // Métodos GET: permiten acceder a los valores de los atributos
     public int getId() {
         return id;
     }
@@ -32,6 +34,11 @@ public class Product {
         return imagen;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+    
+  // Métodos SET: permiten modificar los valores de los atributos
     public void setId(int id) {
         this.id = id;
     }
@@ -54,6 +61,10 @@ public class Product {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     

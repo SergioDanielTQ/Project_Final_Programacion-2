@@ -1,15 +1,16 @@
 package models;
-
+// Clase que representa a un Usuario dentro del sistema
 public class Usuario {
     private int idUsuario;
     private String nombre;
     private String email;   
     private String password;
     private String rol;     
-
+    
+    // Constructor vacío (permite crear objetos sin inicializar atributos de inmediato)
     public Usuario() {
     }
-
+    // Métodos GET: permiten acceder a los valores de los atributos
     public int getIdUsuario() {
         return idUsuario;
     }
@@ -21,7 +22,7 @@ public class Usuario {
     public String getNombre() {
         return nombre;
     }
-
+    // Métodos SET: permiten modificar los valores de los atributos
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

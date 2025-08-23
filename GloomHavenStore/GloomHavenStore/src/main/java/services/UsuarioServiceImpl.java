@@ -7,16 +7,18 @@ import java.util.List;
 import java.util.Optional;
 import models.Usuario;
 
-
+// implementación del servicio de usuarios (crud)
 public class UsuarioServiceImpl implements UsuarioService {
-
+    // método para listar todos los usuarios
     @Override
     public List<Usuario> listar() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT id_usuario AS idUsuario, nombre, email, password, rol FROM usuarios";
+        // se abre la conexión y se ejecuta la consulta
         try (Connection conn = MySQLConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
+             // se recorren los resultados y se crean objetos usuario
             while (rs.next()) {
                 Usuario usuario = new Usuario();
                 usuario.setIdUsuario(rs.getInt("idUsuario"));
@@ -31,11 +33,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         return usuarios;
     }
-
+    // método para buscar un usuario por su id
     @Override
     public Optional<Usuario> porId(int id) {
         Usuario usuario = null;
         String sql = "SELECT id_usuario AS idUsuario, nombre, email, password, rol FROM usuarios WHERE id_usuario = ?";
+         // se usa preparedstatement para buscar un usuario por id
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -54,12 +57,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         return Optional.ofNullable(usuario);
     }
-
+     // método para guardar (insertar o actualizar) un usuario
     @Override
     public void guardar(Usuario usuario) {
         String sql;
         boolean actualizar = usuario.getIdUsuario() > 0;
-
+         // si el usuario ya existe se hace update, sino se inserta
         if (actualizar) {
             sql = "UPDATE usuarios SET nombre = ?, email = ?, password = ?, rol = ? WHERE id_usuario = ?";
         } else {
@@ -84,9 +87,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
     }
 
+    // método para eliminar un usuario por su id
     @Override
     public void eliminar(int id) {
         String sql = "DELETE FROM usuarios WHERE id_usuario = ?";
+         // se ejecuta un delete en base al id recibido
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -95,4 +100,5 @@ public class UsuarioServiceImpl implements UsuarioService {
             e.printStackTrace();
         }
     }
+ 
 }

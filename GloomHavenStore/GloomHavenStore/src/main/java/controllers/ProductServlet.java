@@ -10,38 +10,55 @@ import jakarta.servlet.http.HttpServletResponse;
 import models.Product;
 import services.ProductService;
 import services.ProductServiceImpl;
-
+// Servlet encargado de gestionar los productos.
+// Permite listar, agregar, editar, eliminar y cambiar el estado (disponible/agotado)
 @WebServlet({"/product", "/ProductServlet"})
 public class ProductServlet extends HttpServlet {
 
-    private ProductService service = new ProductServiceImpl();
+    private final ProductService service = new ProductServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String accion = request.getParameter("accion");
-
+        System.out.println("[ProductServlet][GET] accion=" + accion);
+        
+        // Si no se pasa ninguna acción -> se muestran todos los productos
         if (accion == null) {
-            // Mostrar lista de productos
             List<Product> productList = service.getAllProducts();
             request.setAttribute("productList", productList);
             getServletContext().getRequestDispatcher("/ProductList.jsp").forward(request, response);
-
+        
+        // Editar producto
         } else if ("editar".equals(accion)) {
-            // Mostrar formulario de edición
             int id = Integer.parseInt(request.getParameter("id"));
-            Product producto = service.getProductById(id);
+            Product producto = service.getProductById(id); 
             request.setAttribute("producto", producto);
             getServletContext().getRequestDispatcher("/formProducto.jsp").forward(request, response);
-
+            
+        // Eliminar producto
         } else if ("eliminar".equals(accion)) {
             int id = Integer.parseInt(request.getParameter("id"));
-            service.deleteProduct(id);
+            boolean ok = service.deleteProduct(id);
+            System.out.println("[ProductServlet] eliminar id=" + id + " ok=" + ok);
             response.sendRedirect(request.getContextPath() + "/product");
-
-            }
-
+        // Marcar producto como agotado
+        } else if ("agotado".equals(accion)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            boolean ok = service.marcarAgotado(id);
+            System.out.println("[ProductServlet] marcarAgotado id=" + id + " ok=" + ok);
+            response.sendRedirect(request.getContextPath() + "/product");
+        // Marcar producto como disponible
+        } else if ("disponible".equals(accion)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            boolean ok = service.marcarDisponible(id);
+            System.out.println("[ProductServlet] marcarDisponible id=" + id + " ok=" + ok);
+            response.sendRedirect(request.getContextPath() + "/product");
+        // Si la acción no es reconocida -> volver al listado
+        } else {
+            response.sendRedirect(request.getContextPath() + "/product");
+        }
     }
 
     @Override
@@ -49,9 +66,9 @@ public class ProductServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String accion = request.getParameter("accion");
-
+        System.out.println("[ProductServlet][POST] accion=" + accion);
+        // Actualizar producto existente
         if ("update".equals(accion)) {
-            // Editar producto
             int id = Integer.parseInt(request.getParameter("id"));
             String nombre = request.getParameter("nombre");
             String descripcion = request.getParameter("descripcion");
@@ -64,14 +81,10 @@ public class ProductServlet extends HttpServlet {
             p.setPrecio(precio);
 
             boolean actualizado = service.updateProduct(p);
-
-            if (actualizado) {
-                response.sendRedirect("ProductServlet");
-            } else {
-                response.sendRedirect("formProducto.jsp?id=" + id + "&error=true");
-            }
+            System.out.println("[ProductServlet] update id=" + id + " ok=" + actualizado);
+            response.sendRedirect(request.getContextPath() + "/product");
+         // Agregar nuevo producto
         } else if ("add".equals(accion)) {
-            // Agregar producto
             String nombre = request.getParameter("nombre");
             String descripcion = request.getParameter("descripcion");
             double precio = Double.parseDouble(request.getParameter("precio"));
@@ -81,8 +94,12 @@ public class ProductServlet extends HttpServlet {
             p.setDescripcion(descripcion);
             p.setPrecio(precio);
 
-            service.addProduct(p);
-            response.sendRedirect("ProductServlet");
+            boolean ok = service.addProduct(p);
+            System.out.println("[ProductServlet] add ok=" + ok);
+            response.sendRedirect(request.getContextPath() + "/product");
+        // Acción no válida -> regresar al listado
+        } else {
+            response.sendRedirect(request.getContextPath() + "/product");
         }
     }
 }
